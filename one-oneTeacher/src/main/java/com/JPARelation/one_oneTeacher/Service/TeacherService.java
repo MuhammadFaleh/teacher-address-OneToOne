@@ -1,10 +1,11 @@
 package com.JPARelation.one_oneTeacher.Service;
 
 import com.JPARelation.one_oneTeacher.Api.ApiException;
-import com.JPARelation.one_oneTeacher.DTO.AddressDTO;
-import com.JPARelation.one_oneTeacher.DTO.TeacherDTO;
-import com.JPARelation.one_oneTeacher.Model.Address;
+import com.JPARelation.one_oneTeacher.DTO.IN.TeacherDTOIN;
+import com.JPARelation.one_oneTeacher.DTO.OUT.TeacherDTOOUT;
+import com.JPARelation.one_oneTeacher.Model.Course;
 import com.JPARelation.one_oneTeacher.Model.Teacher;
+import com.JPARelation.one_oneTeacher.Repository.CourseRepository;
 import com.JPARelation.one_oneTeacher.Repository.TeacherRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -16,30 +17,35 @@ import java.util.List;
 @RequiredArgsConstructor
 public class TeacherService {
     private final TeacherRepository teacherRepository;
+    private final CourseRepository courseRepository;
 
-    public List<Teacher> getTeachers(){
-        return teacherRepository.findAll();
+    public List<TeacherDTOOUT> getTeachers(){
+        ArrayList<TeacherDTOOUT> teacherDTOOUTS = new ArrayList<>();
+        for(Teacher teacher : teacherRepository.findAll()){
+            teacherDTOOUTS.add(convertToDTO(teacher));
+        }
+        return teacherDTOOUTS;
     }
 
-    public void addTeacher(TeacherDTO teacherDTO){
-        teacherRepository.save(convertToObject(teacherDTO));
+    public void addTeacher(TeacherDTOIN teacherDTOIN){
+        teacherRepository.save(convertToObject(teacherDTOIN));
     }
 
-    public void updateTeacher(Integer id,TeacherDTO teacherDTO){
-        Teacher teacher = getTeacherById(id);
+    public void updateTeacher(Integer id, TeacherDTOIN teacherDTOIN){
+        Teacher teacher = teacherRepository.findTeacherById(id);
 
         if (teacher==null){
             throw new ApiException("teacher not found");
         }
-        teacher.setAge(teacherDTO.getAge());
-        teacher.setName(teacherDTO.getName());
-        teacher.setSalary(teacherDTO.getSalary());
-        teacher.setEmail(teacherDTO.getEmail());
+        teacher.setAge(teacherDTOIN.getAge());
+        teacher.setName(teacherDTOIN.getName());
+        teacher.setSalary(teacherDTOIN.getSalary());
+        teacher.setEmail(teacherDTOIN.getEmail());
         teacherRepository.save(teacher);
     }
 
     public void deleteProfile(Integer id){
-        Teacher teacher = getTeacherById(id);
+        Teacher teacher = teacherRepository.findTeacherById(id);
 
         if (teacher==null){
             throw new ApiException("teacher not found");
@@ -51,9 +57,15 @@ public class TeacherService {
         return teacherRepository.findTeacherById(id);
     }
 
-    public Teacher convertToObject(TeacherDTO teacher){
+
+
+    public Teacher convertToObject(TeacherDTOIN teacher){
         return new Teacher(teacher.getTeacher_id(), teacher.getName(),teacher.getAge(), teacher.getEmail(),teacher.getSalary(),
-                null);
+                null, null);
+    }
+
+    public TeacherDTOOUT convertToDTO(Teacher teacher){
+        return new TeacherDTOOUT(teacher.getId(),teacher.getName(),teacher.getAge(),teacher.getEmail(),teacher.getSalary());
     }
 
 }

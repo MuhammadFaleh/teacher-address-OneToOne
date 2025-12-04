@@ -1,9 +1,7 @@
 package com.JPARelation.one_oneTeacher.Controller;
 
 import com.JPARelation.one_oneTeacher.Api.ApiResponse;
-import com.JPARelation.one_oneTeacher.DTO.AddressDTO;
-import com.JPARelation.one_oneTeacher.DTO.TeacherDTO;
-import com.JPARelation.one_oneTeacher.Service.AddressService;
+import com.JPARelation.one_oneTeacher.DTO.IN.TeacherDTOIN;
 import com.JPARelation.one_oneTeacher.Service.TeacherService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -23,14 +21,14 @@ public class TeacherController {
     }
 
     @PostMapping("/create-teacher")
-    public ResponseEntity<?> createTeacher(@RequestBody @Valid TeacherDTO teacherDTO){
-        teacherService.addTeacher(teacherDTO);
+    public ResponseEntity<?> createTeacher(@RequestBody @Valid TeacherDTOIN teacherDTOIN){
+        teacherService.addTeacher(teacherDTOIN);
         return ResponseEntity.status(200).body(new ApiResponse("teacher was created successfully"));
 
     }
     @PutMapping("/update-teacher/{id}")
-    public ResponseEntity<?> updateTeacher(@PathVariable Integer id, @RequestBody @Valid TeacherDTO teacherDTO){
-        teacherService.updateTeacher(id,teacherDTO);
+    public ResponseEntity<?> updateTeacher(@PathVariable Integer id, @RequestBody @Valid TeacherDTOIN teacherDTOIN){
+        teacherService.updateTeacher(id, teacherDTOIN);
         return ResponseEntity.status(200).body(new ApiResponse("teacher was updated successfully"));
     }
     @DeleteMapping("/delete-teacher/{id}")

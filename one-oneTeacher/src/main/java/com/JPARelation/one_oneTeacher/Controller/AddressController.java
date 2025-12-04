@@ -1,13 +1,11 @@
 package com.JPARelation.one_oneTeacher.Controller;
 
 import com.JPARelation.one_oneTeacher.Api.ApiResponse;
-import com.JPARelation.one_oneTeacher.DTO.AddressDTO;
-import com.JPARelation.one_oneTeacher.Model.Address;
+import com.JPARelation.one_oneTeacher.DTO.IN.AddressDTOIN;
 import com.JPARelation.one_oneTeacher.Service.AddressService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -24,14 +22,14 @@ public class AddressController {
     }
 
     @PostMapping("/create-address")
-    public ResponseEntity<?> createAddress(@RequestBody @Valid AddressDTO addressDTO){
-        addressService.createAddress(addressDTO);
+    public ResponseEntity<?> createAddress(@RequestBody @Valid AddressDTOIN addressDTOIN){
+        addressService.createAddress(addressDTOIN);
         return ResponseEntity.status(200).body(new ApiResponse("address was created successfully"));
 
     }
     @PutMapping("/update-address/{id}")
-    public ResponseEntity<?> updateAddress(@PathVariable Integer id, @RequestBody @Valid AddressDTO addressDTO){
-        addressService.updateAddress(id, addressDTO);
+    public ResponseEntity<?> updateAddress(@PathVariable Integer id, @RequestBody @Valid AddressDTOIN addressDTOIN){
+        addressService.updateAddress(id, addressDTOIN);
         return ResponseEntity.status(200).body(new ApiResponse("address was updated successfully"));
     }
     @DeleteMapping("/delete-address/{id}")

@@ -1,12 +1,11 @@
 package com.JPARelation.one_oneTeacher.Service;
 
 import com.JPARelation.one_oneTeacher.Api.ApiException;
-import com.JPARelation.one_oneTeacher.DTO.AddressDTO;
-import com.JPARelation.one_oneTeacher.DTO.TeacherDTO;
+import com.JPARelation.one_oneTeacher.DTO.IN.AddressDTOIN;
 import com.JPARelation.one_oneTeacher.Model.Address;
 import com.JPARelation.one_oneTeacher.Model.Teacher;
 import com.JPARelation.one_oneTeacher.Repository.AddressRepository;
-import jakarta.persistence.criteria.CriteriaBuilder;
+import com.JPARelation.one_oneTeacher.Repository.TeacherRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -16,25 +15,25 @@ import java.util.List;
 @RequiredArgsConstructor
 public class AddressService {
     private final AddressRepository addressRepository;
-    private final TeacherService teacherService;
+    private final TeacherRepository teacherRepository;
 
     public List<Address> getAddress(){
         return addressRepository.findAll();
     }
 
-    public void createAddress(AddressDTO addressDTO){
-        Address address = convertDtoToAddress(addressDTO);
+    public void createAddress(AddressDTOIN addressDTOIN){
+        Address address = convertDtoToAddress(addressDTOIN);
         addressRepository.save(address);
     }
 
-    public void updateAddress(Integer id, AddressDTO addressDTO){
+    public void updateAddress(Integer id, AddressDTOIN addressDTOIN){
         Address address = getAddressById(id);
         if(address == null){
             throw new ApiException("address not found");
         }
-        address.setArea(addressDTO.getArea());
-        address.setBuildingNumber(addressDTO.getBuildingNumber());
-        address.setStreet(addressDTO.getStreet());
+        address.setArea(addressDTOIN.getArea());
+        address.setBuildingNumber(addressDTOIN.getBuildingNumber());
+        address.setStreet(addressDTOIN.getStreet());
         addressRepository.save(address);
     }
 
@@ -49,13 +48,13 @@ public class AddressService {
         return addressRepository.findAddressById(id);
     }
 
-    public Address convertDtoToAddress(AddressDTO addressDTO){
-        Teacher teacher = teacherService.getTeacherById(addressDTO.getTeacher_id());
+    public Address convertDtoToAddress(AddressDTOIN addressDTOIN){
+        Teacher teacher = teacherRepository.findTeacherById(addressDTOIN.getTeacher_id());
         if(teacher == null){
             throw new ApiException("teacher not found");
         }
-        return new Address(addressDTO.getTeacher_id(),addressDTO.getArea(),
-                addressDTO.getStreet(),addressDTO.getBuildingNumber(), teacher);
+        return new Address(teacher.getId(), addressDTOIN.getArea(),
+                addressDTOIN.getStreet(), addressDTOIN.getBuildingNumber(), teacher);
     }
 
 }
